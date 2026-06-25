@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Museum Findr",
+    "slug": "museum-findr",
+    "scheme": "museum-findr",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#7C2D28"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.museumfindr.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#7C2D28"
+      },
+      "package": "com.museumfindr.app"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.expo/
+.env
+*.log
+.DS_Store
+
+# Local setup scripts (stay on your machine, not pushed to GitHub)
+push-to-github.bat
+auto-push.ps1
+register-task.ps1
+TURN-ON.bat
+TURN-OFF.bat
+install-git.bat
+check-git.bat
+git-check-result.txt
+git-check-done.txt
