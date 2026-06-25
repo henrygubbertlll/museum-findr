@@ -20,6 +20,19 @@
       },
       "package": "com.museumfindr.app"
     },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/icon.png",
+      "name": "Museum Findr",
+      "shortName": "MuseumFindr",
+      "description": "Discover museums near you",
+      "backgroundColor": "#F5F0E8",
+      "themeColor": "#7C2D28",
+      "display": "standalone",
+      "orientation": "portrait",
+      "lang": "en"
+    },
     "plugins": [
       "expo-router",
       "expo-font"
