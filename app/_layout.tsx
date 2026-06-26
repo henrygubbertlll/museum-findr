@@ -46,6 +46,10 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen
+          name="onboarding"
+          options={{ presentation: 'card', animation: 'fade' }}
+        />
+        <Stack.Screen
           name="museum/[id]"
           options={{ presentation: 'card', animation: 'slide_from_right' }}
         />
