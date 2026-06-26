@@ -1,6 +1,6 @@
 import type { Museum, User, Visit, Collection, Guide, FeedEvent, Notification } from './types';
 
-// Placeholder images — using picsum with seeds for determinism
+// Placeholder images â using picsum with seeds for determinism
 const img = (seed: string, w = 800, h = 500) =>
   `https://picsum.photos/seed/${seed}/${w}/${h}`;
 
@@ -18,16 +18,16 @@ export const museums: Museum[] = [
     thumbnail: img('frick', 120, 120),
     openNow: true,
     hoursToday: 'Open till 6 pm',
-    admission: '$22 · Pay what you wish Thu',
+    admission: '$22 Â· Pay what you wish Thu',
     blurb:
-      'A Gilded Age mansion turned intimate gallery — Vermeer, Rembrandt, and Fragonard in rooms that feel like someone still lives there.',
+      'A Gilded Age mansion turned intimate gallery â Vermeer, Rembrandt, and Fragonard in rooms that feel like someone still lives there.',
     exhibits: [
       {
         id: 'e1a',
         title: 'The Vermeer Room',
         dates: 'Permanent',
         image: img('vermeer', 400, 250),
-        blurb: 'Three Vermeers hang in one room — a rare confluence.',
+        blurb: 'Three Vermeers hang in one room â a rare confluence.',
       },
       {
         id: 'e1b',
@@ -93,7 +93,7 @@ export const museums: Museum[] = [
         title: 'Painting and Sculpture Collection',
         dates: 'Permanent',
         image: img('moma-painting', 400, 250),
-        blurb: 'From Cézanne to de Kooning — the 20th century in one building.',
+        blurb: 'From CÃ©zanne to de Kooning â the 20th century in one building.',
       },
     ],
   },
@@ -164,7 +164,7 @@ export const museums: Museum[] = [
     hoursToday: 'Closed today',
     admission: 'Pay what you wish',
     blurb:
-      'Medieval art and architecture tucked into Fort Tryon Park — a cloister, a chapel, and the Unicorn Tapestries.',
+      'Medieval art and architecture tucked into Fort Tryon Park â a cloister, a chapel, and the Unicorn Tapestries.',
     exhibits: [
       {
         id: 'e6a',
@@ -190,14 +190,14 @@ export const museums: Museum[] = [
     hoursToday: 'Open till 6 pm',
     admission: '$25',
     blurb:
-      'German and Austrian art from 1890–1940 — Klimt\'s Woman in Gold, Schiele, and the Wiener Werkstätte.',
+      'German and Austrian art from 1890â1940 â Klimt\'s Woman in Gold, Schiele, and the Wiener WerkstÃ¤tte.',
     exhibits: [
       {
         id: 'e7a',
         title: 'Klimt & Schiele',
         dates: 'Permanent',
         image: img('klimt', 400, 250),
-        blurb: 'The crown jewel of the Neue — Klimt\'s golden masterworks in one quiet room.',
+        blurb: 'The crown jewel of the Neue â Klimt\'s golden masterworks in one quiet room.',
       },
     ],
   },
@@ -254,7 +254,8 @@ export const visits: Visit[] = [
     userId: 'u0',
     date: '2026-06-18',
     rating: 5,
-    note: 'Spent the afternoon in the tapestry hall.',
+    note: 'Take the A train. Worth every minute of the journey.',
+    companion: 'solo',
   },
   {
     id: 'v2',
@@ -263,14 +264,25 @@ export const visits: Visit[] = [
     date: '2026-06-11',
     rating: 5,
     note: 'Biennial — all the better for it.',
+    companion: 'with Clara',
   },
   {
     id: 'v3',
+    museumId: 'm1',
+    userId: 'u0',
+    date: '2026-05-30',
+    rating: 4,
+    note: 'Smaller than I expected, and all the better for it.',
+    companion: 'with Mara',
+  },
+  {
+    id: 'v4',
     museumId: 'm7',
     userId: 'u0',
-    date: '2026-06-02',
+    date: '2026-05-12',
     rating: 4,
     note: undefined,
+    companion: 'solo',
   },
 ];
 
@@ -307,9 +319,9 @@ export const guides: Guide[] = [
     cover: img('museum-mile', 800, 400),
     byline: 'By the Editors',
     stops: [
-      { museumId: 'm2', note: 'Start with the Greek and Roman Galleries — arrive early.' },
+      { museumId: 'm2', note: 'Start with the Greek and Roman Galleries â arrive early.' },
       { museumId: 'm5', note: 'Walk the spiral ramp top-to-bottom.' },
-      { museumId: 'm7', note: 'Finish with Klimt. Have a coffee at the Café Sabarsky.' },
+      { museumId: 'm7', note: 'Finish with Klimt. Have a coffee at the CafÃ© Sabarsky.' },
     ],
   },
 ];
