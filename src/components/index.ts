@@ -10,3 +10,4 @@ export { default as TabBar } from './TabBar';
 export { default as VisitedCard } from './VisitedCard';
 export { default as BottomSheet } from './BottomSheet';
 export { default as LogVisitSheet } from './LogVisitSheet';
+export { FilterSheet } from './FilterSheet';
