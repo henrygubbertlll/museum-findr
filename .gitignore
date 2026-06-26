@@ -5,13 +5,20 @@ dist/
 *.log
 .DS_Store
 
-# Local setup scripts (stay on your machine, not pushed to GitHub)
-push-to-github.bat
+# Auto-sync scripts (contain credentials — stay on your machine, never pushed)
+silent-push.ps1
+watchdog.ps1
+setup-auto-push.ps1
 auto-push.ps1
 register-task.ps1
 TURN-ON.bat
 TURN-OFF.bat
+push-to-github.bat
 install-git.bat
 check-git.bat
+sync-enabled.flag
+push-log.txt
+.last-pushed-hash
 git-check-result.txt
 git-check-done.txt
+.npmrc
