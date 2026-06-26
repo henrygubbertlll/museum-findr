@@ -47,17 +47,19 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen
           name="museum/[id]"
-          options={{
-            presentation: 'card',
-            animation: 'slide_from_right',
-          }}
+          options={{ presentation: 'card', animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name="search"
-          options={{
-            presentation: 'card',
-            animation: 'fade_from_bottom',
-          }}
+          options={{ presentation: 'card', animation: 'fade_from_bottom' }}
+        />
+        <Stack.Screen
+          name="collections"
+          options={{ presentation: 'card', animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="guide/[id]"
+          options={{ presentation: 'card', animation: 'slide_from_right' }}
         />
       </Stack>
     </>
