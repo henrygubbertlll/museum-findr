@@ -1,12 +1,97 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import { useRouter } from 'expo-router';
-import { Colors, Fonts, Spacing, TextStyles } from '../../src/theme';
+import { Funnel, BookmarkSimple } from 'phosphor-react-native';
+import { Colors, Fonts, Radii, Shadows, Spacing, TextStyles } from '../../src/theme';
 import { getLogbook, getWishlist } from '../../src/data/repository';
 import type { Museum, Visit } from '../../src/data/types';
-import { museumsById } from '../../src/data/seed';
-import { currentUser } from '../../src/data/seed';
-import { SectionHeader, StatStrip, VisitedCard, MuseumListCard, Eyebrow } from '../../src/components';
+import { museumsById, currentUser } from '../../src/data/seed';
+import { StatStrip, VisitedCard, Eyebrow } from '../../src/components';
+
+// Ruled divider with italic centred label
+function Divider({ label }: { label: string }) {
+  return (
+    <View style={divStyles.row}>
+      <View style={divStyles.line} />
+      <Text style={divStyles.label}>{label}</Text>
+      <View style={divStyles.line} />
+    </View>
+  );
+}
+
+const divStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginHorizontal: Spacing.screenH,
+    marginBottom: 10,
+    marginTop: 6,
+  },
+  line: { flex: 1, height: 1, backgroundColor: Colors.border },
+  label: {
+    fontFamily: Fonts.displayItalic,
+    fontSize: 13,
+    color: Colors.ink,
+    flexShrink: 1,
+  },
+});
+
+// Compact wishlist row
+function WishlistRow({ museum, onPress }: { museum: Museum; onPress: () => void }) {
+  return (
+    <TouchableOpacity onPress={onPress} activeOpacity={0.85} style={wlStyles.row}>
+      <Image source={{ uri: museum.thumbnail }} style={wlStyles.thumb} resizeMode="cover" />
+      <View style={wlStyles.info}>
+        <Text style={wlStyles.name} numberOfLines={1}>{museum.name}</Text>
+        <Text style={wlStyles.sub}>{museum.category} · {museum.distanceMi} mi</Text>
+      </View>
+      <BookmarkSimple size={18} weight="fill" color={Colors.oxblood} />
+    </TouchableOpacity>
+  );
+}
+
+const wlStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginHorizontal: Spacing.screenH,
+    marginBottom: 8,
+    backgroundColor: Colors.card,
+    borderRadius: 12,
+    padding: 12,
+    ...Shadows.card,
+  },
+  thumb: {
+    width: 46,
+    height: 46,
+    borderRadius: 9,
+    backgroundColor: Colors.sand,
+    flexShrink: 0,
+  },
+  info: { flex: 1 },
+  name: {
+    fontFamily: Fonts.display,
+    fontSize: 15,
+    color: Colors.ink,
+    lineHeight: 18,
+  },
+  sub: {
+    fontFamily: Fonts.body,
+    fontSize: 11,
+    color: Colors.stone,
+    marginTop: 3,
+  },
+});
 
 export default function SavedScreen() {
   const router = useRouter();
@@ -27,8 +112,13 @@ export default function SavedScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Eyebrow mono color={Colors.stone}>Your Collection</Eyebrow>
-          <Text style={styles.title}>Logbook</Text>
+          <View>
+            <Eyebrow mono color={Colors.stone}>Saved</Eyebrow>
+            <Text style={styles.title}>Your Logbook</Text>
+          </View>
+          <TouchableOpacity style={styles.filterBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Funnel size={15} weight="thin" color={Colors.ink} />
+          </TouchableOpacity>
         </View>
 
         {/* Stats strip */}
@@ -43,8 +133,8 @@ export default function SavedScreen() {
 
         {/* Recently visited */}
         {visits.length > 0 && (
-          <View style={styles.section}>
-            <SectionHeader title="Recently Visited" />
+          <View>
+            <Divider label="Recently visited" />
             {visits.map((visit) => {
               const museum = museumsById[visit.museumId];
               if (!museum) return null;
@@ -63,14 +153,13 @@ export default function SavedScreen() {
 
         {/* Wishlist */}
         {wishlist.length > 0 && (
-          <View style={styles.section}>
-            <SectionHeader title="Wishlist" />
+          <View style={styles.wishlistSection}>
+            <Divider label="Wishlist" />
             {wishlist.map((museum) => (
-              <MuseumListCard
+              <WishlistRow
                 key={museum.id}
                 museum={museum}
                 onPress={() => router.push(`/museum/${museum.id}` as any)}
-                style={styles.listCard}
               />
             ))}
           </View>
@@ -83,14 +172,26 @@ export default function SavedScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.cream },
   scroll: { flex: 1 },
-  content: { paddingBottom: 32 },
+  content: { paddingBottom: 40 },
   header: {
     paddingHorizontal: Spacing.screenH,
     paddingTop: Spacing.md,
     paddingBottom: Spacing.lg,
-    gap: 6,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
   },
-  title: { ...TextStyles.screenTitle, color: Colors.ink },
+  title: { ...TextStyles.screenTitle, color: Colors.ink, marginTop: 6 },
+  filterBtn: {
+    width: 32,
+    height: 32,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 8,
+    backgroundColor: Colors.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   stats: {
     marginHorizontal: Spacing.screenH,
     marginBottom: Spacing.xxl,
@@ -99,10 +200,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
   },
-  section: {
-    paddingHorizontal: Spacing.screenH,
-    marginBottom: Spacing.xl,
+  visitCard: {
+    marginHorizontal: Spacing.screenH,
+    marginBottom: 8,
   },
-  visitCard: { marginBottom: Spacing.md },
-  listCard: { marginBottom: Spacing.sm },
+  wishlistSection: {
+    marginTop: 4,
+  },
 });
