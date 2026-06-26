@@ -8,54 +8,149 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import { GearSix, Trophy } from 'phosphor-react-native';
-import { Colors, Fonts, Spacing, TextStyles, Radii } from '../../src/theme';
-import { currentUser } from '../../src/data/seed';
-import { StatStrip, Eyebrow } from '../../src/components';
+import {
+  GearSix,
+  Trophy,
+  Medal,
+  Globe,
+  LockSimple,
+} from 'phosphor-react-native';
+import { Colors, Fonts, Shadows, Spacing, Radii } from '../../src/theme';
+import { currentUser, visits, museumsById, friends } from '../../src/data/seed';
+import { StatStrip } from '../../src/components';
+
+function Divider({ label }: { label: string }) {
+  return (
+    <View style={divStyles.row}>
+      <View style={divStyles.line} />
+      <Text style={divStyles.label}>{label}</Text>
+      <View style={divStyles.line} />
+    </View>
+  );
+}
+const divStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginHorizontal: Spacing.screenH,
+    marginBottom: 12,
+    marginTop: 18,
+  },
+  line: { flex: 1, height: 1, backgroundColor: '#E7DFD3' },
+  label: {
+    fontFamily: Fonts.displayItalic,
+    fontSize: 13,
+    color: Colors.ink,
+    flexShrink: 1,
+  },
+});
+
+function BadgeIcon({ icon, size }: { icon: string; size: number }) {
+  if (icon === 'medal') return <Medal size={size} weight="fill" color="#C8923A" />;
+  if (icon === 'globe') return <Globe size={size} weight="fill" color="#1B4D33" />;
+  return <Trophy size={size} weight="fill" color={Colors.oxblood} />;
+}
+
+const BADGE_BG: Record<string, string> = {
+  medal: '#FBF1DC',
+  globe: '#EAEFE6',
+  sparkle: '#F0E3DF',
+};
+const BADGE_BORDER: Record<string, string> = {
+  medal: '#F0E0BC',
+  globe: '#D6E0CE',
+  sparkle: '#E5CFC9',
+};
 
 export default function ProfileScreen() {
-  const { name, handle, avatar, bio, stats, badges } = currentUser;
+  const { name, handle, avatar, stats, badges } = currentUser;
+  const myVisits = visits.filter((v) => v.userId === currentUser.id).slice(0, 4);
 
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        {/* Oxblood header */}
+
         <View style={styles.heroHeader}>
-          <TouchableOpacity style={styles.settingsBtn}>
-            <GearSix size={22} weight="thin" color={Colors.cream} />
+          <TouchableOpacity style={styles.settingsBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <View style={styles.settingsCircle}>
+              <GearSix size={18} weight="thin" color="#fff" />
+            </View>
           </TouchableOpacity>
-          <Image source={{ uri: avatar }} style={styles.avatar} />
-          <Text style={styles.name}>{name}</Text>
-          <Text style={styles.handle}>{handle}</Text>
-          {bio && <Text style={styles.bio}>{bio}</Text>}
+          <View style={styles.avatarRow}>
+            <Image source={{ uri: avatar }} style={styles.avatar} />
+            <View style={styles.nameBlock}>
+              <Text style={styles.name}>{name}</Text>
+              <Text style={styles.handle}>{handle} · New York</Text>
+              <View style={styles.countsRow}>
+                <View style={styles.countItem}>
+                  <Text style={styles.countNum}>{friends.length + 139}</Text>
+                  <Text style={styles.countLabel}>friends</Text>
+                </View>
+                <View style={styles.countItem}>
+                  <Text style={styles.countNum}>{stats.visited}</Text>
+                  <Text style={styles.countLabel}>visited</Text>
+                </View>
+              </View>
+            </View>
+          </View>
         </View>
 
-        {/* Stats */}
         <StatStrip
           stats={[
-            { value: stats.visited, label: 'Visited' },
-            { value: stats.wishlist, label: 'Wishlist' },
+            { value: stats.visited, label: 'Museums' },
             { value: stats.cities, label: 'Cities' },
+            { value: stats.visited * 4, label: 'Reviews' },
           ]}
           style={styles.stats}
         />
 
-        {/* Badges */}
-        {badges.length > 0 && (
-          <View style={styles.section}>
-            <Eyebrow style={styles.sectionEyebrow}>Badges</Eyebrow>
-            <View style={styles.badges}>
-              {badges.map((badge) => (
-                <View key={badge.id} style={styles.badge}>
-                  <View style={styles.badgeIcon}>
-                    <Trophy size={20} weight="fill" color={Colors.gilt} />
-                  </View>
-                  <Text style={styles.badgeLabel}>{badge.label}</Text>
-                </View>
-              ))}
+        <Divider label="Badges earned" />
+        <View style={styles.badgesRow}>
+          {badges.map((badge) => (
+            <View key={badge.id} style={styles.badgeItem}>
+              <View style={[
+                styles.badgeCircle,
+                {
+                  backgroundColor: BADGE_BG[badge.icon] ?? '#F0E3DF',
+                  borderColor: BADGE_BORDER[badge.icon] ?? '#E5CFC9',
+                },
+              ]}>
+                <BadgeIcon icon={badge.icon} size={24} />
+              </View>
+              <Text style={styles.badgeLabel}>{badge.label}</Text>
             </View>
+          ))}
+          <View style={styles.badgeItem}>
+            <View style={[styles.badgeCircle, styles.badgeLocked]}>
+              <LockSimple size={22} weight="thin" color={Colors.muted} />
+            </View>
+            <Text style={[styles.badgeLabel, styles.badgeLabelLocked]}>Locked</Text>
           </View>
-        )}
+        </View>
+
+        <Divider label="Recent visits" />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.recentScroll}
+        >
+          {myVisits.map((visit) => {
+            const museum = museumsById[visit.museumId];
+            if (!museum) return null;
+            return (
+              <View key={visit.id} style={styles.recentCard}>
+                <Image source={{ uri: museum.heroImage }} style={styles.recentThumb} resizeMode="cover" />
+                <Text style={styles.recentName} numberOfLines={1}>{museum.name}</Text>
+                <Text style={styles.recentDate}>
+                  {new Date(visit.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                </Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+
+        <View style={{ height: 24 }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -66,90 +161,70 @@ const styles = StyleSheet.create({
   content: { paddingBottom: 40 },
   heroHeader: {
     backgroundColor: Colors.oxblood,
-    paddingTop: 20,
-    paddingBottom: 32,
-    alignItems: 'center',
-    gap: 6,
     paddingHorizontal: Spacing.screenH,
+    paddingTop: 12,
+    paddingBottom: 22,
+    borderBottomLeftRadius: 22,
+    borderBottomRightRadius: 22,
   },
-  settingsBtn: {
-    position: 'absolute',
-    right: Spacing.screenH,
-    top: 20,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: Colors.oxbloodLight,
-    borderWidth: 2,
-    borderColor: 'rgba(248,244,237,0.3)',
-    marginBottom: 4,
-  },
-  name: {
-    fontFamily: Fonts.display,
-    fontSize: 24,
-    color: Colors.cream,
-  },
-  handle: {
-    fontFamily: Fonts.body,
-    fontSize: 13,
-    color: 'rgba(248,244,237,0.65)',
-  },
-  bio: {
-    fontFamily: Fonts.body,
-    fontSize: 13,
-    color: 'rgba(248,244,237,0.8)',
-    textAlign: 'center',
-    marginTop: 4,
-  },
-  stats: {
-    marginHorizontal: Spacing.screenH,
-    marginTop: -16,
-    backgroundColor: Colors.card,
-    borderRadius: Radii.card,
+  settingsBtn: { alignSelf: 'flex-end', marginBottom: 6 },
+  settingsCircle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     borderWidth: 1,
-    borderColor: Colors.border,
-    shadowColor: '#211C17',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  section: {
-    paddingHorizontal: Spacing.screenH,
-    marginTop: Spacing.xl,
-  },
-  sectionEyebrow: {
-    marginBottom: Spacing.md,
-  },
-  badges: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm,
-  },
-  badge: {
-    backgroundColor: Colors.card,
-    borderRadius: Radii.card,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    padding: Spacing.md,
-    alignItems: 'center',
-    gap: 6,
-    minWidth: 90,
-  },
-  badgeIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(232,180,80,0.12)',
+    borderColor: 'rgba(255,255,255,0.25)',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  avatarRow: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 2 },
+  avatar: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: Colors.oxbloodLight,
+    borderWidth: 3,
+    borderColor: 'rgba(255,255,255,0.85)',
+    flexShrink: 0,
+  },
+  nameBlock: { flex: 1 },
+  name: { fontFamily: Fonts.display, fontSize: 24, lineHeight: 26, color: '#fff' },
+  handle: { fontFamily: Fonts.body, fontSize: 12, color: 'rgba(255,255,255,0.70)', marginTop: 4 },
+  countsRow: { flexDirection: 'row', gap: 14, marginTop: 9 },
+  countItem: { flexDirection: 'row', alignItems: 'baseline', gap: 4 },
+  countNum: { fontFamily: Fonts.bodyBold, fontSize: 14, color: '#fff' },
+  countLabel: { fontFamily: Fonts.body, fontSize: 10, color: 'rgba(255,255,255,0.60)' },
+  stats: {
+    marginHorizontal: Spacing.screenH,
+    marginTop: 16,
+    backgroundColor: Colors.card,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    ...Shadows.card,
+  },
+  badgesRow: { flexDirection: 'row', paddingHorizontal: Spacing.screenH, gap: 10 },
+  badgeItem: { flex: 1, alignItems: 'center', gap: 6 },
+  badgeCircle: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeLocked: { backgroundColor: '#F3EEE6', borderColor: '#E5DDD0' },
   badgeLabel: {
     fontFamily: Fonts.bodyMedium,
-    fontSize: 11,
-    color: Colors.ink,
+    fontSize: 9,
+    color: Colors.bodyMuted,
     textAlign: 'center',
+    lineHeight: 12,
   },
+  badgeLabelLocked: { color: Colors.muted },
+  recentScroll: { paddingHorizontal: Spacing.screenH, gap: 10 },
+  recentCard: { width: 104 },
+  recentThumb: { width: 104, height: 80, borderRadius: 12, backgroundColor: Colors.sand },
+  recentName: { fontFamily: Fonts.display, fontSize: 12, color: Colors.ink, marginTop: 6, lineHeight: 14 },
+  recentDate: { fontFamily: Fonts.body, fontSize: 10, color: Colors.stone, marginTop: 3 },
 });
