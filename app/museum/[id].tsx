@@ -23,7 +23,7 @@ import { Colors, Fonts, Radii, Shadows, Spacing, TextStyles } from '../../src/th
 import { getMuseum } from '../../src/data/repository';
 import type { Museum } from '../../src/data/types';
 import { useIsSaved, useStore } from '../../src/store';
-import { Button, StarRating, Eyebrow } from '../../src/components';
+import { Button, StarRating, Eyebrow, LogVisitSheet } from '../../src/components';
 
 const { width: W } = Dimensions.get('window');
 const HERO_H = 300;
@@ -32,6 +32,7 @@ export default function MuseumDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const [museum, setMuseum] = useState<Museum | null>(null);
+  const [logSheetOpen, setLogSheetOpen] = useState(false);
   const isSaved = useIsSaved(id ?? '');
   const toggleWishlist = useStore((s) => s.toggleWishlist);
 
@@ -134,8 +135,15 @@ export default function MuseumDetailScreen() {
 
       {/* Sticky CTA */}
       <View style={styles.cta}>
-        <Button label="Log this visit" variant="primary" fullWidth />
+        <Button label="Log this visit" variant="primary" fullWidth onPress={() => setLogSheetOpen(true)} />
       </View>
+
+      {/* Log Visit Sheet */}
+      <LogVisitSheet
+        visible={logSheetOpen}
+        onClose={() => setLogSheetOpen(false)}
+        museum={museum}
+      />
     </SafeAreaView>
   );
 }
@@ -178,62 +186,101 @@ const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: Colors.cream,
   },
-  name: { ...TextStyles.screenTitle, color: Colors.ink, fontSize: 28 },
-  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  ratingText: { fontFamily: Fonts.body, fontSize: 13, color: Colors.stone },
-  blurb: { fontFamily: Fonts.body, fontSize: 14, color: Colors.bodyMuted, lineHeight: 21 },
-  metaPills: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
+  name: {
+    fontFamily: Fonts.display,
+    fontSize: 28,
+    lineHeight: 30,
+    color: Colors.ink,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  ratingText: {
+    fontFamily: Fonts.body,
+    fontSize: 12,
+    color: Colors.stone,
+  },
+  blurb: {
+    fontFamily: Fonts.body,
+    fontSize: 14,
+    lineHeight: 21,
+    color: Colors.bodyMuted,
+  },
+  metaPills: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 4,
+  },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
     backgroundColor: Colors.sand,
-    borderRadius: Radii.chip,
+    borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
-  pillText: { fontFamily: Fonts.body, fontSize: 12, color: Colors.stone },
+  pillText: {
+    fontFamily: Fonts.body,
+    fontSize: 12,
+    color: Colors.stone,
+  },
   section: {
     paddingHorizontal: Spacing.xl,
-    gap: Spacing.md,
+    paddingBottom: Spacing.xl,
+    gap: 12,
   },
   sectionTitle: {
-    fontFamily: Fonts.bodySemiBold,
-    fontSize: 14,
+    fontFamily: Fonts.display,
+    fontSize: 20,
     color: Colors.ink,
-    marginBottom: 4,
   },
   exhibitCard: {
     flexDirection: 'row',
-    gap: Spacing.md,
+    gap: 12,
     backgroundColor: Colors.card,
-    borderRadius: Radii.card,
+    borderRadius: 12,
     overflow: 'hidden',
-    ...Shadows.card,
+    padding: 10,
   },
   exhibitImg: {
-    width: 90,
-    height: 90,
+    width: 80,
+    height: 70,
+    borderRadius: 8,
     backgroundColor: Colors.sand,
+    flexShrink: 0,
   },
-  exhibitInfo: {
-    flex: 1,
-    padding: Spacing.md,
-    gap: 4,
-    justifyContent: 'center',
+  exhibitInfo: { flex: 1, gap: 4 },
+  exhibitTitle: {
+    fontFamily: Fonts.displaySemiBold,
+    fontSize: 14,
+    color: Colors.ink,
+    lineHeight: 17,
   },
-  exhibitTitle: { fontFamily: Fonts.display, fontSize: 15, color: Colors.ink },
-  exhibitDates: { fontFamily: Fonts.body, fontSize: 11, color: Colors.stone },
-  exhibitBlurb: { fontFamily: Fonts.body, fontSize: 12, color: Colors.bodyMuted, lineHeight: 17 },
+  exhibitDates: {
+    fontFamily: Fonts.body,
+    fontSize: 11,
+    color: Colors.stone,
+  },
+  exhibitBlurb: {
+    fontFamily: Fonts.body,
+    fontSize: 12,
+    lineHeight: 17,
+    color: Colors.bodyMuted,
+  },
   cta: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    padding: Spacing.xl,
-    paddingBottom: 32,
     backgroundColor: Colors.cream,
     borderTopWidth: 1,
     borderTopColor: Colors.border,
+    paddingHorizontal: Spacing.xl,
+    paddingTop: 12,
+    paddingBottom: 28,
   },
 });
