@@ -116,7 +116,7 @@ export default function MuseumDetailScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Exhibitions</Text>
             {museum.exhibits.map((exhibit) => (
-              <View key={exhibit.id} style={styles.exhibitCard}>
+              <TouchableOpacity key={exhibit.id} style={styles.exhibitCard} activeOpacity={0.85} onPress={() => router.push(`/exhibit/${exhibit.id}` as any)}>
                 <Image
                   source={{ uri: exhibit.image }}
                   style={styles.exhibitImg}
@@ -127,7 +127,7 @@ export default function MuseumDetailScreen() {
                   <Text style={styles.exhibitDates}>{exhibit.dates}</Text>
                   <Text style={styles.exhibitBlurb} numberOfLines={2}>{exhibit.blurb}</Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         )}
@@ -186,101 +186,62 @@ const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: Colors.cream,
   },
-  name: {
-    fontFamily: Fonts.display,
-    fontSize: 28,
-    lineHeight: 30,
-    color: Colors.ink,
-  },
-  ratingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  ratingText: {
-    fontFamily: Fonts.body,
-    fontSize: 12,
-    color: Colors.stone,
-  },
-  blurb: {
-    fontFamily: Fonts.body,
-    fontSize: 14,
-    lineHeight: 21,
-    color: Colors.bodyMuted,
-  },
-  metaPills: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 4,
-  },
+  name: { ...TextStyles.screenTitle, color: Colors.ink, fontSize: 28 },
+  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  ratingText: { fontFamily: Fonts.body, fontSize: 13, color: Colors.stone },
+  blurb: { fontFamily: Fonts.body, fontSize: 14, color: Colors.bodyMuted, lineHeight: 21 },
+  metaPills: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
     backgroundColor: Colors.sand,
-    borderRadius: 8,
+    borderRadius: Radii.chip,
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
-  pillText: {
-    fontFamily: Fonts.body,
-    fontSize: 12,
-    color: Colors.stone,
-  },
+  pillText: { fontFamily: Fonts.body, fontSize: 12, color: Colors.stone },
   section: {
     paddingHorizontal: Spacing.xl,
-    paddingBottom: Spacing.xl,
-    gap: 12,
+    gap: Spacing.md,
   },
   sectionTitle: {
-    fontFamily: Fonts.display,
-    fontSize: 20,
+    fontFamily: Fonts.bodySemiBold,
+    fontSize: 14,
     color: Colors.ink,
+    marginBottom: 4,
   },
   exhibitCard: {
     flexDirection: 'row',
-    gap: 12,
+    gap: Spacing.md,
     backgroundColor: Colors.card,
-    borderRadius: 12,
+    borderRadius: Radii.card,
     overflow: 'hidden',
-    padding: 10,
+    ...Shadows.card,
   },
   exhibitImg: {
-    width: 80,
-    height: 70,
-    borderRadius: 8,
+    width: 90,
+    height: 90,
     backgroundColor: Colors.sand,
-    flexShrink: 0,
   },
-  exhibitInfo: { flex: 1, gap: 4 },
-  exhibitTitle: {
-    fontFamily: Fonts.displaySemiBold,
-    fontSize: 14,
-    color: Colors.ink,
-    lineHeight: 17,
+  exhibitInfo: {
+    flex: 1,
+    padding: Spacing.md,
+    gap: 4,
+    justifyContent: 'center',
   },
-  exhibitDates: {
-    fontFamily: Fonts.body,
-    fontSize: 11,
-    color: Colors.stone,
-  },
-  exhibitBlurb: {
-    fontFamily: Fonts.body,
-    fontSize: 12,
-    lineHeight: 17,
-    color: Colors.bodyMuted,
-  },
+  exhibitTitle: { fontFamily: Fonts.display, fontSize: 15, color: Colors.ink },
+  exhibitDates: { fontFamily: Fonts.body, fontSize: 11, color: Colors.stone },
+  exhibitBlurb: { fontFamily: Fonts.body, fontSize: 12, color: Colors.bodyMuted, lineHeight: 17 },
   cta: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
+    padding: Spacing.xl,
+    paddingBottom: 32,
     backgroundColor: Colors.cream,
     borderTopWidth: 1,
     borderTopColor: Colors.border,
-    paddingHorizontal: Spacing.xl,
-    paddingTop: 12,
-    paddingBottom: 28,
   },
 });
