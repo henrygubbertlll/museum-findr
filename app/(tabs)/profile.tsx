@@ -59,7 +59,7 @@ function BadgeIcon({ icon, size }: { icon: string; size: number }) {
   return <Trophy size={size} weight="fill" color={color} />;
 }
 
-const BADQ�_BG: Record<string, string> = {
+const BADGE_BG: Record<string, string> = {
   medal: '#FBF1DC',
   globe: '#EAEFE6',
   sparkle: '#F0E3DF',
@@ -85,7 +85,7 @@ export default function ProfileScreen() {
         {/* ── Oxblood identity header ── */}
         <View style={styles.heroHeader}>
           {/* Settings */}
-          <TouchableOpacity style={styles.settingsBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} onPress={() => router.push('/settings' as any))}>
+          <TouchableOpacity style={styles.settingsBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} onPress={() => router.push('/settings' as any)}>
             <View style={styles.settingsCircle}>
               <GearSix size={18} weight="thin" color="#fff" />
             </View>
@@ -121,22 +121,27 @@ export default function ProfileScreen() {
           style={styles.stats}
         />
 
-        {/* in Badges ── */}
+        {/* ── Badges ── */}
         <Divider label="Badges earned" />
         <View style={styles.badgesRow}>
           {badges.map((badge) => (
-            <View key={badge.id} style={styles.badgeItem}>
+            <TouchableOpacity
+              key={badge.id}
+              style={styles.badgeItem}
+              activeOpacity={0.75}
+              onPress={() => router.push({ pathname: '/achievement', params: { id: badge.id } } as any)}
+            >
               <View style={[
                 styles.badgeCircle,
                 {
-                  backgroundColor: BADGE_BG[tadge.icon] ?? '#F0E3DF',
+                  backgroundColor: BADGE_BG[badge.icon] ?? '#F0E3DF',
                   borderColor: BADGE_BORDER[badge.icon] ?? '#E5CFC9',
                 },
               ]}>
                 <BadgeIcon icon={badge.icon} size={24} />
               </View>
               <Text style={styles.badgeLabel}>{badge.label}</Text>
-            </View>
+            </TouchableOpacity>
           ))}
           {/* Locked badge placeholder */}
           <View style={styles.badgeItem}>
@@ -147,14 +152,14 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* in Recent visits ── */}
+        {/* ── Recent visits ── */}
         <Divider label="Recent visits" />
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.recentScroll}
         >
-          {  myVisits.map((visit) => {
+          {myVisits.map((visit) => {
             const museum = museumsById[visit.museumId];
             if (!museum) return null;
             return (
@@ -279,7 +284,7 @@ const styles = StyleSheet.create({
   },
   badgeLocked: {
     backgroundColor: '#F3EEE6',
-    borderColor: '#E5DDD0'',
+    borderColor: '#E5DDD0',
   },
   badgeLabel: {
     fontFamily: Fonts.bodyMedium,
