@@ -77,6 +77,10 @@ export default function RootLayout() {
           name="settings"
           options={{ presentation: 'card', animation: 'slide_from_right' }}
         />
+        <Stack.Screen
+          name="achievement"
+          options={{ presentation: 'modal', animation: 'fade' }}
+        />
       </Stack>
     </>
   );
