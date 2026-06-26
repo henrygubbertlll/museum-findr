@@ -16,6 +16,7 @@ import {
   ClockCounterClockwise,
   ArrowUpLeft,
   Star,
+  GridFour,
 } from 'phosphor-react-native';
 import { Colors, Fonts, Spacing } from '../src/theme';
 import { museums } from '../src/data/seed';
@@ -23,6 +24,7 @@ import type { Museum } from '../src/data/types';
 
 const RECENT_SEARCHES = ['Impressionism', 'Natural history', 'Photography'];
 
+// Highlight matched substring in gilt tint
 function HighlightText({ text, query, style }: { text: string; query: string; style?: object }) {
   if (!query) return <Text style={style}>{text}</Text>;
   const idx = text.toLowerCase().indexOf(query.toLowerCase());
@@ -52,7 +54,11 @@ function SearchResultRow({
     <TouchableOpacity style={styles.resultRow} onPress={onPress} activeOpacity={0.75}>
       <Image source={{ uri: museum.thumbnail }} style={styles.resultThumb} resizeMode="cover" />
       <View style={styles.resultInfo}>
-        <HighlightText text={museum.name} query={query} style={styles.resultName} />
+        <HighlightText
+          text={museum.name}
+          query={query}
+          style={styles.resultName}
+        />
         <View style={styles.resultSubRow}>
           <HighlightText
             text={`${museum.category} · ${museum.distanceMi} mi`}
@@ -75,6 +81,7 @@ export default function SearchScreen() {
   const [query, setQuery] = useState('');
 
   useEffect(() => {
+    // Auto-focus on mount
     const timer = setTimeout(() => inputRef.current?.focus(), 100);
     return () => clearTimeout(timer);
   }, []);
@@ -94,6 +101,7 @@ export default function SearchScreen() {
   return (
     <SafeAreaView style={styles.safe}>
 
+      {/* Search bar row */}
       <View style={styles.searchRow}>
         <View style={styles.searchBox}>
           <MagnifyingGlass size={18} weight="thin" color={Colors.oxblood} />
@@ -126,6 +134,7 @@ export default function SearchScreen() {
         contentContainerStyle={styles.scrollContent}
       >
 
+        {/* Results */}
         {results.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>Results</Text>
@@ -142,12 +151,28 @@ export default function SearchScreen() {
           </View>
         )}
 
+        {/* No results */}
         {query.length > 0 && results.length === 0 && (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>No museums match "{query}"</Text>
+            <View style={styles.emptyIconCircle}>
+              <MagnifyingGlass size={38} weight="thin" color={Colors.oxblood} />
+            </View>
+            <Text style={styles.emptyTitle}>No matches found</Text>
+            <Text style={styles.emptySub}>
+              We couldn't find a museum for "{query}". Try another name, or browse by category.
+            </Text>
+            <TouchableOpacity
+              style={styles.emptyBtn}
+              onPress={() => setQuery('')}
+              activeOpacity={0.85}
+            >
+              <GridFour size={15} weight="thin" color={Colors.oxblood} />
+              <Text style={styles.emptyBtnText}>Browse categories</Text>
+            </TouchableOpacity>
           </View>
         )}
 
+        {/* Recent searches */}
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>Recent searches</Text>
           {RECENT_SEARCHES.map((term) => (
@@ -172,6 +197,7 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.cream },
 
+  // Search bar
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -223,6 +249,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 
+  // Result rows
   resultRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -265,6 +292,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFE8DB',
   },
 
+  // Recent searches
   recentRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -278,14 +306,50 @@ const styles = StyleSheet.create({
     color: Colors.bodyMuted,
   },
 
+  // Empty state
   emptyState: {
-    paddingHorizontal: Spacing.screenH,
-    paddingTop: 32,
     alignItems: 'center',
+    paddingTop: 48,
+    paddingHorizontal: 40,
   },
-  emptyText: {
-    fontFamily: Fonts.displayItalic,
-    fontSize: 15,
+  emptyIconCircle: {
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    backgroundColor: '#F0E3DF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  emptyTitle: {
+    fontFamily: Fonts.display,
+    fontSize: 22,
+    color: Colors.ink,
+    textAlign: 'center',
+    lineHeight: 26,
+    marginBottom: 8,
+  },
+  emptySub: {
+    fontFamily: Fonts.body,
+    fontSize: 13,
     color: Colors.stone,
+    textAlign: 'center',
+    lineHeight: 19,
+    marginBottom: 22,
+  },
+  emptyBtn: {
+    borderWidth: 1,
+    borderColor: Colors.oxblood,
+    borderRadius: 11,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+  },
+  emptyBtnText: {
+    fontFamily: Fonts.bodySemiBold,
+    fontSize: 13,
+    color: Colors.oxblood,
   },
 });
