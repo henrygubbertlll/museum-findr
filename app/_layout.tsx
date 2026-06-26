@@ -65,6 +65,14 @@ export default function RootLayout() {
           name="notifications"
           options={{ presentation: 'card', animation: 'slide_from_right' }}
         />
+        <Stack.Screen
+          name="exhibit/[id]"
+          options={{ presentation: 'card', animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="find-friends"
+          options={{ presentation: 'card', animation: 'slide_from_right' }}
+        />
       </Stack>
     </>
   );
