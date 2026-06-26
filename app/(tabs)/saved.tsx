@@ -164,6 +164,26 @@ export default function SavedScreen() {
             ))}
           </View>
         )}
+
+        {/* Empty state — shown when logbook and wishlist are both empty */}
+        {visits.length === 0 && wishlist.length === 0 && (
+          <View style={styles.emptyState}>
+            <View style={styles.emptyIconCircle}>
+              <BookmarkSimple size={40} weight="thin" color={Colors.oxblood} />
+            </View>
+            <Text style={styles.emptyTitle}>Start your collection</Text>
+            <Text style={styles.emptySub}>
+              Every museum you visit will live here. Log your first to begin the logbook.
+            </Text>
+            <TouchableOpacity
+              style={styles.emptyBtn}
+              onPress={() => router.push('/' as any)}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.emptyBtnText}>Find museums nearby</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -206,5 +226,48 @@ const styles = StyleSheet.create({
   },
   wishlistSection: {
     marginTop: 4,
+  },
+
+  // Empty state
+  emptyState: {
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingHorizontal: 40,
+  },
+  emptyIconCircle: {
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    backgroundColor: '#F0E3DF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  emptyTitle: {
+    fontFamily: Fonts.display,
+    fontSize: 22,
+    color: Colors.ink,
+    textAlign: 'center',
+    lineHeight: 26,
+    marginBottom: 8,
+  },
+  emptySub: {
+    fontFamily: Fonts.body,
+    fontSize: 13,
+    color: Colors.stone,
+    textAlign: 'center',
+    lineHeight: 19,
+    marginBottom: 22,
+  },
+  emptyBtn: {
+    backgroundColor: Colors.oxblood,
+    borderRadius: 11,
+    paddingVertical: 13,
+    paddingHorizontal: 24,
+  },
+  emptyBtnText: {
+    fontFamily: Fonts.bodySemiBold,
+    fontSize: 13,
+    color: '#fff',
   },
 });
