@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  FlatList,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
@@ -22,6 +21,7 @@ import {
   HeroCard,
   MuseumListCard,
   SectionHeader,
+  FilterSheet,
 } from '../../src/components';
 
 const CATEGORIES: Category[] = ['Art', 'History', 'Modern', 'Science', 'House-Museum', 'Photography'];
@@ -29,6 +29,7 @@ const CATEGORIES: Category[] = ['Art', 'History', 'Modern', 'Science', 'House-Mu
 export default function DiscoverScreen() {
   const router = useRouter();
   const [museums, setMuseums] = useState<Museum[]>([]);
+  const [filterOpen, setFilterOpen] = useState(false);
   const activeFilters = useStore((s) => s.activeFilters);
   const toggleFilter = useStore((s) => s.toggleFilter);
 
@@ -65,7 +66,7 @@ export default function DiscoverScreen() {
             >
               <MagnifyingGlass size={22} weight="thin" color={Colors.ink} />
             </TouchableOpacity>
-            <TouchableOpacity hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <TouchableOpacity hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} onPress={() => setFilterOpen(true)}>
               <SlidersHorizontal size={22} weight="thin" color={Colors.ink} />
             </TouchableOpacity>
           </View>
@@ -139,14 +140,21 @@ export default function DiscoverScreen() {
           ))}
         </View>
       </ScrollView>
+
+      <FilterSheet visible={filterOpen} onClose={() => setFilterOpen(false)} />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.cream },
+  safe: {
+    flex: 1,
+    backgroundColor: Colors.cream,
+  },
   scroll: { flex: 1 },
-  content: { paddingBottom: 24 },
+  content: {
+    paddingBottom: 24,
+  },
   header: {
     paddingHorizontal: Spacing.screenH,
     paddingTop: Spacing.md,
@@ -158,8 +166,13 @@ const styles = StyleSheet.create({
     gap: 4,
     marginBottom: 6,
   },
-  locationText: { fontSize: 10 },
-  title: { ...TextStyles.screenTitle, color: Colors.ink },
+  locationText: {
+    fontSize: 10,
+  },
+  title: {
+    ...TextStyles.screenTitle,
+    color: Colors.ink,
+  },
   headerActions: {
     position: 'absolute',
     right: Spacing.screenH,
@@ -168,7 +181,9 @@ const styles = StyleSheet.create({
     gap: Spacing.lg,
     alignItems: 'center',
   },
-  chipsScroll: { marginBottom: Spacing.xl },
+  chipsScroll: {
+    marginBottom: Spacing.xl,
+  },
   chips: {
     paddingHorizontal: Spacing.screenH,
     gap: Spacing.sm,
@@ -179,9 +194,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.screenH,
     marginBottom: Spacing.xl,
   },
-  section: { paddingHorizontal: Spacing.screenH },
-  listCard: { marginBottom: Spacing.sm },
+  section: {
+    paddingHorizontal: Spacing.screenH,
+  },
+  listCard: {
+    marginBottom: Spacing.sm,
+  },
 
+  // Collections teaser
   collectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -212,7 +232,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 10,
     marginBottom: Spacing.sm,
-    ...Shadows.card,
   },
   collectionThumb: {
     width: 48,
