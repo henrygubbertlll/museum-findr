@@ -42,6 +42,7 @@ export interface Visit {
   rating: number;
   note?: string;
   photos?: string[];
+  companion?: string; // e.g. "with Mara" | "solo"
 }
 
 export interface User {
