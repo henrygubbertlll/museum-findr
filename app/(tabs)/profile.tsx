@@ -13,12 +13,15 @@ import {
   Trophy,
   Medal,
   Globe,
+  Palette,
   LockSimple,
 } from 'phosphor-react-native';
+import { useRouter } from 'expo-router';
 import { Colors, Fonts, Shadows, Spacing, Radii } from '../../src/theme';
 import { currentUser, visits, museumsById, friends } from '../../src/data/seed';
 import { StatStrip } from '../../src/components';
 
+// Ruled divider matching Logbook style
 function Divider({ label }: { label: string }) {
   return (
     <View style={divStyles.row}>
@@ -46,24 +49,32 @@ const divStyles = StyleSheet.create({
   },
 });
 
+// Badge icon map
 function BadgeIcon({ icon, size }: { icon: string; size: number }) {
+  const color = Colors.oxblood;
   if (icon === 'medal') return <Medal size={size} weight="fill" color="#C8923A" />;
   if (icon === 'globe') return <Globe size={size} weight="fill" color="#1B4D33" />;
-  return <Trophy size={size} weight="fill" color={Colors.oxblood} />;
+  if (icon === 'sparkle') return <Trophy size={size} weight="fill" color={color} />;
+  if (icon === 'palette') return <Palette size={size} weight="fill" color="#1B4D33" />;
+  return <Trophy size={size} weight="fill" color={color} />;
 }
 
-const BADGE_BG: Record<string, string> = {
+const BADQ�_BG: Record<string, string> = {
   medal: '#FBF1DC',
   globe: '#EAEFE6',
   sparkle: '#F0E3DF',
+  palette: '#EAEFE6',
 };
+
 const BADGE_BORDER: Record<string, string> = {
   medal: '#F0E0BC',
   globe: '#D6E0CE',
   sparkle: '#E5CFC9',
+  palette: '#D6E0CE',
 };
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const { name, handle, avatar, stats, badges } = currentUser;
   const myVisits = visits.filter((v) => v.userId === currentUser.id).slice(0, 4);
 
@@ -71,12 +82,16 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.safe}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
 
+        {/* ── Oxblood identity header ── */}
         <View style={styles.heroHeader}>
-          <TouchableOpacity style={styles.settingsBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          {/* Settings */}
+          <TouchableOpacity style={styles.settingsBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} onPress={() => router.push('/settings' as any))}>
             <View style={styles.settingsCircle}>
               <GearSix size={18} weight="thin" color="#fff" />
             </View>
           </TouchableOpacity>
+
+          {/* Avatar + name row */}
           <View style={styles.avatarRow}>
             <Image source={{ uri: avatar }} style={styles.avatar} />
             <View style={styles.nameBlock}>
@@ -96,6 +111,7 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        {/* ── Stats grid ── */}
         <StatStrip
           stats={[
             { value: stats.visited, label: 'Museums' },
@@ -105,6 +121,7 @@ export default function ProfileScreen() {
           style={styles.stats}
         />
 
+        {/* in Badges ── */}
         <Divider label="Badges earned" />
         <View style={styles.badgesRow}>
           {badges.map((badge) => (
@@ -112,7 +129,7 @@ export default function ProfileScreen() {
               <View style={[
                 styles.badgeCircle,
                 {
-                  backgroundColor: BADGE_BG[badge.icon] ?? '#F0E3DF',
+                  backgroundColor: BADGE_BG[tadge.icon] ?? '#F0E3DF',
                   borderColor: BADGE_BORDER[badge.icon] ?? '#E5CFC9',
                 },
               ]}>
@@ -121,6 +138,7 @@ export default function ProfileScreen() {
               <Text style={styles.badgeLabel}>{badge.label}</Text>
             </View>
           ))}
+          {/* Locked badge placeholder */}
           <View style={styles.badgeItem}>
             <View style={[styles.badgeCircle, styles.badgeLocked]}>
               <LockSimple size={22} weight="thin" color={Colors.muted} />
@@ -129,13 +147,14 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        {/* in Recent visits ── */}
         <Divider label="Recent visits" />
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.recentScroll}
         >
-          {myVisits.map((visit) => {
+          {  myVisits.map((visit) => {
             const museum = museumsById[visit.museumId];
             if (!museum) return null;
             return (
@@ -159,6 +178,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.cream },
   content: { paddingBottom: 40 },
+
   heroHeader: {
     backgroundColor: Colors.oxblood,
     paddingHorizontal: Spacing.screenH,
@@ -167,7 +187,10 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 22,
     borderBottomRightRadius: 22,
   },
-  settingsBtn: { alignSelf: 'flex-end', marginBottom: 6 },
+  settingsBtn: {
+    alignSelf: 'flex-end',
+    marginBottom: 6,
+  },
   settingsCircle: {
     width: 34,
     height: 34,
@@ -177,7 +200,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarRow: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 2 },
+  avatarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginTop: 2,
+  },
   avatar: {
     width: 72,
     height: 72,
@@ -188,12 +216,39 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   nameBlock: { flex: 1 },
-  name: { fontFamily: Fonts.display, fontSize: 24, lineHeight: 26, color: '#fff' },
-  handle: { fontFamily: Fonts.body, fontSize: 12, color: 'rgba(255,255,255,0.70)', marginTop: 4 },
-  countsRow: { flexDirection: 'row', gap: 14, marginTop: 9 },
-  countItem: { flexDirection: 'row', alignItems: 'baseline', gap: 4 },
-  countNum: { fontFamily: Fonts.bodyBold, fontSize: 14, color: '#fff' },
-  countLabel: { fontFamily: Fonts.body, fontSize: 10, color: 'rgba(255,255,255,0.60)' },
+  name: {
+    fontFamily: Fonts.display,
+    fontSize: 24,
+    lineHeight: 26,
+    color: '#fff',
+  },
+  handle: {
+    fontFamily: Fonts.body,
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.70)',
+    marginTop: 4,
+  },
+  countsRow: {
+    flexDirection: 'row',
+    gap: 14,
+    marginTop: 9,
+  },
+  countItem: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 4,
+  },
+  countNum: {
+    fontFamily: Fonts.bodyBold,
+    fontSize: 14,
+    color: '#fff',
+  },
+  countLabel: {
+    fontFamily: Fonts.body,
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.60)',
+  },
+
   stats: {
     marginHorizontal: Spacing.screenH,
     marginTop: 16,
@@ -203,8 +258,17 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     ...Shadows.card,
   },
-  badgesRow: { flexDirection: 'row', paddingHorizontal: Spacing.screenH, gap: 10 },
-  badgeItem: { flex: 1, alignItems: 'center', gap: 6 },
+
+  badgesRow: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.screenH,
+    gap: 10,
+  },
+  badgeItem: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 6,
+  },
   badgeCircle: {
     width: 54,
     height: 54,
@@ -213,7 +277,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeLocked: { backgroundColor: '#F3EEE6', borderColor: '#E5DDD0' },
+  badgeLocked: {
+    backgroundColor: '#F3EEE6',
+    borderColor: '#E5DDD0'',
+  },
   badgeLabel: {
     fontFamily: Fonts.bodyMedium,
     fontSize: 9,
@@ -221,10 +288,34 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 12,
   },
-  badgeLabelLocked: { color: Colors.muted },
-  recentScroll: { paddingHorizontal: Spacing.screenH, gap: 10 },
-  recentCard: { width: 104 },
-  recentThumb: { width: 104, height: 80, borderRadius: 12, backgroundColor: Colors.sand },
-  recentName: { fontFamily: Fonts.display, fontSize: 12, color: Colors.ink, marginTop: 6, lineHeight: 14 },
-  recentDate: { fontFamily: Fonts.body, fontSize: 10, color: Colors.stone, marginTop: 3 },
+  badgeLabelLocked: {
+    color: Colors.muted,
+  },
+
+  recentScroll: {
+    paddingHorizontal: Spacing.screenH,
+    gap: 10,
+  },
+  recentCard: {
+    width: 104,
+  },
+  recentThumb: {
+    width: 104,
+    height: 80,
+    borderRadius: 12,
+    backgroundColor: Colors.sand,
+  },
+  recentName: {
+    fontFamily: Fonts.display,
+    fontSize: 12,
+    color: Colors.ink,
+    marginTop: 6,
+    lineHeight: 14,
+  },
+  recentDate: {
+    fontFamily: Fonts.body,
+    fontSize: 10,
+    color: Colors.stone,
+    marginTop: 3,
+  },
 });
